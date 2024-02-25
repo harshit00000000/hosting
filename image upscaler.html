@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator Tool</title>
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #qrcode-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    label {
+      font-size: 16px;
+      margin-right: 10px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="qrcode-container">
+    <h1>QR Code Generator Tool</h1>
+    
+    <label for="content">Content:</label>
+    <input type="text" id="content" placeholder="Enter content for QR code">
+
+    <label for="type">Type:</label>
+    <select id="type">
+      <option value="url">URL</option>
+      <option value="text">Text</option>
+      <option value="mail">Email</option>
+      <option value="sms">SMS</option>
+      <option value="whatsapp">WhatsApp</option>
+      <!-- Add more options as needed -->
+    </select>
+
+    <button onclick="generateQRCode()">Generate QR Code</button>
+
+    <div id="qrcode"></div>
+    <button id="download-btn" style="display: none;" onclick="downloadQRCode()">Download QR Code</button>
+  </div>
+
+  <script>
+    function generateQRCode() {
+      const content = document.getElementById('content').value;
+      const type = document.getElementById('type').value;
+
+      if (content.trim() === '') {
+        alert('Please enter content for the QR code.');
+        return;
+      }
+
+      const qrcodeElement = document.getElementById('qrcode');
+      qrcodeElement.innerHTML = '';
+
+      const qrcode = new QRCode(qrcodeElement, {
+        text: content,
+        width: 200,
+        height: 200,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      document.getElementById('download-btn').style.display = 'block';
+    }
+
+    function downloadQRCode() {
+      const qrcodeElement = document.getElementById('qrcode');
+      const qrcodeImageSrc = qrcodeElement.querySelector('img').src;
+
+      const link = document.createElement('a');
+      link.href = qrcodeImageSrc;
+      link.download = 'qrcode.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+</body>
+</html>

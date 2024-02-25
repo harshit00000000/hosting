@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Resizer</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  
+  #container {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+
+  #imagePreview {
+    max-width: 300px;
+    max-height: 300px;
+    margin-bottom: 20px;
+  }
+
+  #imageInput {
+    margin-bottom: 20px;
+  }
+
+  #output {
+    display: none;
+  }
+
+  #downloadBtn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div id="container">
+  <input type="file" id="imageInput" accept="image/*">
+  <div id="previewContainer">
+    <img id="imagePreview" src="#" alt="Image Preview">
+  </div>
+  <div id="options">
+    <label for="width">Width:</label>
+    <input type="number" id="width" placeholder="Width" min="1">
+    <label for="height">Height:</label>
+    <input type="number" id="height" placeholder="Height" min="1">
+  </div>
+  <button id="resizeBtn">Resize Image</button>
+  <a href="#" download="resized_image.png" id="downloadBtn">Download Resized Image</a>
+  <canvas id="output"></canvas>
+</div>
+
+<script>
+  const imageInput = document.getElementById('imageInput');
+  const imagePreview = document.getElementById('imagePreview');
+  const widthInput = document.getElementById('width');
+  const heightInput = document.getElementById('height');
+  const resizeBtn = document.getElementById('resizeBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const outputCanvas = document.getElementById('output');
+  const ctx = outputCanvas.getContext('2d');
+
+  imageInput.addEventListener('change', function() {
+    const file = this.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      imagePreview.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+  });
+
+  resizeBtn.addEventListener('click', function() {
+    const img = new Image();
+    img.onload = function() {
+      const width = widthInput.value ? parseInt(widthInput.value) : img.width;
+      const height = heightInput.value ? parseInt(heightInput.value) : img.height;
+      outputCanvas.width = width;
+      outputCanvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      downloadBtn.href = outputCanvas.toDataURL();
+      downloadBtn.style.display = 'inline-block';
+    }
+    img.src = imagePreview.src;
+  });
+</script>
+</body>
+</html>
